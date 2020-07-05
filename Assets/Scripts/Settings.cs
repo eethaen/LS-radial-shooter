@@ -14,10 +14,7 @@ namespace LazySamurai.RadialShooter
         public SceneEntity projectilePrefab;
         public float minDuration;
         public float maxDuration;
-
-        [Space]
-        [Header("Player")]
-        public int playerHP;
+        public float winScore;
 
         [Space]
         [Header("Enemy")]
@@ -30,7 +27,6 @@ namespace LazySamurai.RadialShooter
         public float enemyOscillationFrequency;
         public float enemyMinRadius;
         public float enemyMaxRadius;
-        public int enemyHP;
 
         [Space]
         [Header("Projectile")]

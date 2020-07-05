@@ -10,12 +10,12 @@ namespace LazySamurai.RadialShooter
         private readonly Transform _parent;
         private T _cachedMember;
 
-        public Pool(int capacity, SceneEntity prefab, Events events, Settings settings, bool membersGenerateCollisionEvents = true)
+        public Pool(int capacity, SceneEntity prefab, Entity.State state, Events events, Settings settings, bool membersGenerateCollisionEvents = true)
         {
             _members = new Queue<T>(capacity);
             _parent = new GameObject($"{typeof(T)}Pool").GetComponent<Transform>();
 
-            var args = new object[] { prefab, events, settings };
+            var args = new object[] { prefab, state, events, settings };
 
             for (var i = 0; i < capacity; i++)
             {

@@ -6,19 +6,27 @@ namespace LazySamurai.RadialShooter
 {
     public class Timer
     {
-        private readonly Events _events;
+        private readonly ViewManager _view;
+        private float _startTime;
 
-        public Timer(Events events)
+        public float Value { get; private set; }
+
+        public Timer(ViewManager view)
         {
-            _events = events;
+            _view = view;
+            _startTime = Time.time;
         }
 
         public void Tick()
         {
-            if (Time.timeSinceLevelLoad > 300f)
-            {
-                _events.TimeIsUp.Invoke();
-            }
+            Value = Time.time - _startTime;
+            _view.SetTimer(Value);
+        }
+
+        public void Reset()
+        {
+            _startTime = Time.time;
+            _view.SetTimer(0f);
         }
     }
 }
