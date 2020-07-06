@@ -18,6 +18,12 @@ namespace LazySamurai.RadialShooter
 
     public interface IPlayable
     {
-        void SetInput(Vector2 MousePosition, bool leftClick, bool rightClick);
+        void SetInput(Vector2 mousePosition, bool leftClick, bool rightClick);
+    }
+
+    public interface IPerishable
+    {
+        float Life { get; }
+        void UpdateLife(float deltaTime);
     }
 }

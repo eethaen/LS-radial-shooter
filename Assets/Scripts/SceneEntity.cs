@@ -11,18 +11,18 @@ namespace LazySamurai.RadialShooter
         public int Id { get; private set; }
         public Type Type { get; private set; }
 
-        public void Initialize(Events events, Type type)
+        public void Initialize(Events events, Type type, int id)
         {
             _events = events;
 
             Type = type;
-            Id = transform.GetInstanceID();
+            Id = id;
         }
 
         protected void OnCollisionEnter2D(Collision2D other)
         {
             CustomDebug.Assert(null != _events, "Events not initilized in scene entity");
-            _events.entityCollided.Invoke(Id);
+            _events.EntityCollided.Invoke(Id);
         }
     }
 }

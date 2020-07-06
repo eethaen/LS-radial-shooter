@@ -9,6 +9,7 @@ namespace LazySamurai.RadialShooter
     {
         [Space]
         [Header("General")]
+        public View viewPrefab;
         public SceneEntity playerPrefab;
         public SceneEntity enemyPrefab;
         public SceneEntity projectilePrefab;
@@ -31,5 +32,6 @@ namespace LazySamurai.RadialShooter
         [Space]
         [Header("Projectile")]
         public float projectileSpeed;
+        public float projectileLife;
     }
 }

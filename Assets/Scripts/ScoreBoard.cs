@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace LazySamurai.RadialShooter
+﻿namespace LazySamurai.RadialShooter
 {
     public class ScoreBoard
     {
-        private readonly ViewManager _view;
+        private readonly ViewController _viewController;
 
         public int Value { get; private set; }
 
-        public ScoreBoard(ViewManager view)
+        public ScoreBoard(ViewController viewController)
         {
-            _view = view;
+            _viewController = viewController;
         }
 
         public void AddScore()
         {
             Value++;
-            _view.SetScore(Value);
+            _viewController.SetScore(Value);
         }
 
         public void Reset()
         {
             Value = 0;
-            _view.SetScore(0);
+            _viewController.SetScore(0);
         }
     }
 }

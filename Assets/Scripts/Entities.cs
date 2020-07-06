@@ -30,7 +30,7 @@ namespace LazySamurai.RadialShooter
             Type = this.GetType();
 
             _sceneEntity = SceneEntity.Instantiate(prefab);
-            _sceneEntity.Initialize(_events, Type);
+            _sceneEntity.Initialize(_events, Type, Id);
 
             Transform.position = state.Position;
             Transform.rotation = state.Rotation;
@@ -128,13 +128,13 @@ namespace LazySamurai.RadialShooter
         {
         }
 
-        public void OnInstantiated(Transform parent)
+        public virtual void OnInstantiated(Transform parent)
         {
             Transform.SetParent(parent);
             Active = false;
         }
 
-        public void OnSpawned(State state)
+        public virtual void OnSpawned(State state)
         {
             Transform.position = state.Position;
             Transform.rotation = state.Rotation;
@@ -142,7 +142,7 @@ namespace LazySamurai.RadialShooter
             Active = true;
         }
 
-        public void OnDespawned()
+        public virtual void OnDespawned()
         {
             Active = false;
         }
@@ -188,7 +188,7 @@ namespace LazySamurai.RadialShooter
                 Color = color,
             };
 
-            _events.projectileShot.Invoke(state);
+            _events.ProjectileShot.Invoke(state);
         }
     }
 
@@ -216,8 +216,10 @@ namespace LazySamurai.RadialShooter
         }
     }
 
-    public class Projectile : PoolableEntity, ITrasnsformable
+    public class Projectile : PoolableEntity, ITrasnsformable, IPerishable
     {
+        public float Life { get; private set; }
+
         public Projectile(SceneEntity prefab, State state, Events events, Settings settings) : base(prefab, state, events, settings)
         {
         }
@@ -233,6 +235,18 @@ namespace LazySamurai.RadialShooter
 
         public void Scale()
         {
+        }
+
+        public override void OnSpawned(State state)
+        {
+            base.OnSpawned(state);
+
+            Life = _settings.projectileLife;
+        }
+
+        public void UpdateLife(float deltaTime)
+        {
+            Life -= deltaTime;
         }
     }
 }

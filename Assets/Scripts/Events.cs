@@ -4,8 +4,8 @@ namespace LazySamurai.RadialShooter
 {
     public class Events
     {
-        public Action<int> entityCollided;
-        public Action<Entity.State> projectileShot;
-        public Action TimeIsUp;
+        public Action<int> EntityCollided;
+        public Action<Entity.State> ProjectileShot;
+        public Action GameStarted;
     }
 }

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62d21370af3f4e245a628ee015a97de5, type: 3}
   m_Name: DefaultSetting
   m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4847789984471579092, guid: 3923d5e4f0c84044ebff29c4c13e2187,
+    type: 3}
   playerPrefab: {fileID: 4612877372450642219, guid: a588ac5c29426774aa759b87325ee3df,
     type: 3}
   enemyPrefab: {fileID: 5659512682590157629, guid: d560c8446618be24fb3aa176a1e5a509,
@@ -20,7 +22,7 @@ MonoBehaviour:
     type: 3}
   minDuration: 180
   maxDuration: 300
-  playerHP: 0
+  winScore: 50
   enemyMaxCount: 30
   enemyMaxSpeed: 2
   enemySpeed:
@@ -99,5 +101,5 @@ MonoBehaviour:
   enemyOscillationFrequency: 4
   enemyMinRadius: 5
   enemyMaxRadius: 10
-  enemyHP: 0
   projectileSpeed: 10
+  projectileLife: 2

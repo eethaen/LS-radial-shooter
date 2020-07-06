@@ -9,8 +9,9 @@ namespace LazySamurai.RadialShooter
         public enum StopGameMode { Win, Lose }
 
         private Events _events;
-        private EntitiesManager _entitiesManager;
         private Input _input;
+        private EntitiesManager _entitiesManager;
+        private ViewController _viewController;
         private Timer _timer;
         private ScoreBoard _scoreBoard;
 
@@ -18,28 +19,31 @@ namespace LazySamurai.RadialShooter
         private readonly List<Entity> _collidedEntities = new List<Entity>();
 
         private ITrasnsformable _cachedTransformable;
+        private IPerishable _cachedPerishable;
+        private IPlayable _cachedPlayable;
         private Entity _cachedEntity;
         private bool _paused = true;
 
         [SerializeField] private Settings _settings;
         [SerializeField] private Camera _camera;
-        [SerializeField] private ViewManager _view;
 
         private void Awake()
         {
             _events = new Events();
             _entitiesManager = new EntitiesManager(_events, _settings, _activeEntities);
             _input = new Input();
+            _viewController = new ViewController(_settings.viewPrefab, _events);
 
-            _events.entityCollided += OnEntityCollided;
-            _events.projectileShot += _entitiesManager.ShootProjectile;
+            _events.EntityCollided += id => _collidedEntities.Add(_activeEntities.Single(e => e.Id == id));
+            _events.ProjectileShot += _entitiesManager.ShootProjectile;
+            _events.GameStarted += StartGame;
         }
 
         public void StartGame()
         {
             if (null == _timer)
             {
-                _timer = new Timer(_view);
+                _timer = new Timer(_viewController);
             }
             else
             {
@@ -48,7 +52,7 @@ namespace LazySamurai.RadialShooter
 
             if (null == _scoreBoard)
             {
-                _scoreBoard = new ScoreBoard(_view);
+                _scoreBoard = new ScoreBoard(_viewController);
             }
             else
             {
@@ -69,11 +73,11 @@ namespace LazySamurai.RadialShooter
 
             if (mode == StopGameMode.Lose)
             {
-                _view.ShowGameOverPanel();
+                _viewController.ShowGameOverPanel(true);
             }
             else
             {
-                _view.ShowWinPanel();
+                _viewController.ShowWinPanel(true);
             }
         }
 
@@ -86,15 +90,8 @@ namespace LazySamurai.RadialShooter
 
             _timer.Tick();
 
-            if (_timer.Value > _settings.maxDuration && _scoreBoard.Value < _settings.winScore)
+            if (GameFinished())
             {
-                StopGame(StopGameMode.Lose);
-                return;
-            }
-
-            if (_timer.Value < _settings.maxDuration && _scoreBoard.Value >= _settings.winScore)
-            {
-                StopGame(StopGameMode.Win);
                 return;
             }
 
@@ -109,7 +106,19 @@ namespace LazySamurai.RadialShooter
             {
                 if (_activeEntities[i] is IPlayable)
                 {
-                    ((IPlayable)_activeEntities[i]).SetInput(_camera.ScreenToWorldPoint(_input.MousePosition), _input.LeftClick, _input.RightClick);
+                    _cachedPlayable = (IPlayable)_activeEntities[i];
+                    _cachedPlayable.SetInput(_camera.ScreenToWorldPoint(_input.MousePosition), _input.LeftClick, _input.RightClick);
+                }
+
+                if (_activeEntities[i] is IPerishable)
+                {
+                    _cachedPerishable = (IPerishable)_activeEntities[i];
+                    _cachedPerishable.UpdateLife(Time.deltaTime);
+
+                    if (_cachedPerishable.Life <= 0f)
+                    {
+                        _entitiesManager.Despawn(_cachedPerishable as Entity);
+                    }
                 }
             }
         }
@@ -134,6 +143,23 @@ namespace LazySamurai.RadialShooter
             }
 
             HandleCollisions();
+        }
+
+        private bool GameFinished()
+        {
+            if (_timer.Value >= _settings.maxDuration && _scoreBoard.Value < _settings.winScore)
+            {
+                StopGame(StopGameMode.Lose);
+                return true;
+            }
+
+            if (_timer.Value < _settings.maxDuration && _scoreBoard.Value >= _settings.winScore)
+            {
+                StopGame(StopGameMode.Win);
+                return true;
+            }
+
+            return false;
         }
 
         private void HandleCollisions()
@@ -163,11 +189,6 @@ namespace LazySamurai.RadialShooter
             }
 
             _collidedEntities.Clear();
-        }
-
-        private void OnEntityCollided(int id)
-        {
-            _collidedEntities.Add(_activeEntities.Single(e => e.Id == id));
         }
     }
 }
