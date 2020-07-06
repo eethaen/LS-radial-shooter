@@ -35,7 +35,7 @@ namespace LazySamurai.RadialShooter
 
         public void Tick()
         {
-            var count = (int)(_settings.enemyMaxCount * _settings.enemyCount.Evaluate(Time.time / _settings.maxDuration)) - _activeEntities.Count(e => e.GetType() == typeof(Enemy));
+            var count = (int)(_settings.enemyMaxCount * _settings.enemyCount.Evaluate(Timer.Value / _settings.maxDuration)) - _activeEntities.Count(e => e.GetType() == typeof(Enemy));
 
             if (count <= 0)
             {
@@ -84,19 +84,21 @@ namespace LazySamurai.RadialShooter
 
         public void DespawnAll()
         {
-            for (int i = 0; i < _activeEntities.Count; i++)
+            for (var i = _activeEntities.Count - 1; i >= 0; i--)
             {
-                _cachedEntity=_activeEntities[i];
+                _cachedEntity = _activeEntities[i];
 
-                if (_cachedEntity.Type == typeof(Enemy))
+                if (_cachedEntity.Type == typeof(Player))
                 {
-                    _enemyPool.Despawn((Enemy)_cachedEntity);
+                    continue;
                 }
-                else if (_cachedEntity.Type == typeof(Projectile))
-                {
-                    _projectilePool.Despawn((Projectile)_cachedEntity);
-                }
+
+                Despawn(_cachedEntity);
             }
+
+            CustomDebug.Assert(_activeEntities.Count(e => e.Type == typeof(Enemy)) == 0);
+            CustomDebug.Assert(_activeEntities.Count(e => e.Type == typeof(Projectile)) == 0);
+            CustomDebug.Assert(_activeEntities.Count(e => e.Type == typeof(Player)) == 1);
         }
     }
 }

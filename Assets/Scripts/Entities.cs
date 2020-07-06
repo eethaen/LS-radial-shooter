@@ -200,7 +200,7 @@ namespace LazySamurai.RadialShooter
 
         public void Move()
         {
-            var t = Time.time / _settings.maxDuration;
+            var t = Timer.Value / _settings.maxDuration;
             var oscillation = _settings.enemyOscillation.Evaluate(t);
 
             RigidBody.velocity = _settings.enemyMaxSpeed * _settings.enemySpeed.Evaluate(t) * Transform.up +

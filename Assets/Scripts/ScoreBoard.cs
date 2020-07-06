@@ -9,6 +9,9 @@
         public ScoreBoard(ViewController viewController)
         {
             _viewController = viewController;
+
+            Value = 0;
+            _viewController.SetScore(0);
         }
 
         public void AddScore()

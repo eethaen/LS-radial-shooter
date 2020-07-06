@@ -13,18 +13,15 @@ namespace LazySamurai.RadialShooter
             _view = GameObject.Instantiate(prefab);
 
             _view.playButton.gameObject.SetActive(true);
-
-            _view.playButton.onClick.AddListener(StartGame);
+            _view.playButton.onClick.AddListener(OnPlayButtonClicked);
         }
 
-        private void StartGame()
+         public void OnPlayButtonClicked()
         {
-            _events.GameStarted();
-            ShowGameOverPanel(false);
-            ShowWinPanel(false);
+            _events.GameStarted.Invoke();
         }
 
-        public void SetTimer(float time)
+        public void SetTimer(int time)
         {
             _view.timer.text = $"Time: {time}";
         }
